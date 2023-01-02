@@ -92,7 +92,7 @@ void OpVaultReader::fillFromSectionField(Entry* entry, const QString& sectionNam
             while (attributes.contains(name)) {
                 name = QString("otp_%1").arg(++i);
             }
-            entry->attributes()->set(name, attrValue);
+            entry->attributes()->set(name, attrValue, true);
         } else if (attrValue.startsWith("otpauth://")) {
             QUrlQuery query(attrValue);
             // at least as of 1Password 7, they don't append the digits= and period= which totp.cpp requires

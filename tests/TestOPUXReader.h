@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 KeePassXC Team <team@keepassxc.org>
+ *  Copyright (C) 2022 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,20 +15,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSXC_OPVAULTOPENWIDGET_H
-#define KEEPASSXC_OPVAULTOPENWIDGET_H
+#ifndef TEST_OPUXREADER_H
+#define TEST_OPUXREADER_H
 
-#include "gui/DatabaseOpenWidget.h"
+#include <QObject>
 
-class OpVaultOpenWidget : public DatabaseOpenWidget
+class TestOPUXReader : public QObject
 {
     Q_OBJECT
 
-public:
-    explicit OpVaultOpenWidget(QWidget* parent = nullptr);
+private slots:
+    void initTestCase();
+    void testReadIntoDatabase();
 
-protected:
-    void openDatabase() override;
+private:
+    QString m_opuxPath;
 };
 
-#endif // KEEPASSXC_OPVAULTOPENWIDGET_H
+#endif /* TEST_OPUXREADER_H */

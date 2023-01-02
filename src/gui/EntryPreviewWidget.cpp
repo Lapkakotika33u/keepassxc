@@ -30,6 +30,8 @@
 #include "keeshare/KeeShareSettings.h"
 #endif
 
+#include <QTabWidget>
+
 namespace
 {
     constexpr int GeneralTabIndex = 0;

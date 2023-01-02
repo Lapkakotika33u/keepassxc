@@ -1485,9 +1485,9 @@ void TestGui::testKeePass1Import()
     fileDialog()->setNextFileName(QString(KEEPASSX_TEST_DATA_DIR).append("/basic.kdb"));
     triggerAction("actionImportKeePass1");
 
-    auto* keepass1OpenWidget = m_tabWidget->currentDatabaseWidget()->findChild<QWidget*>("keepass1OpenWidget");
+    auto* importOpenWidget = m_tabWidget->currentDatabaseWidget()->findChild<QWidget*>("importOpenWidget");
     auto* editPassword =
-        keepass1OpenWidget->findChild<PasswordWidget*>("editPassword")->findChild<QLineEdit*>("passwordEdit");
+        importOpenWidget->findChild<PasswordWidget*>("editPassword")->findChild<QLineEdit*>("passwordEdit");
     QVERIFY(editPassword);
 
     QTest::keyClicks(editPassword, "masterpw");

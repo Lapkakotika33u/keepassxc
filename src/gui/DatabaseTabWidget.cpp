@@ -35,6 +35,7 @@
 #include "gui/osutils/macutils/MacUtils.h"
 #endif
 #include "gui/wizard/NewDatabaseWizard.h"
+#include "wizard/ImportWizard.h"
 
 DatabaseTabWidget::DatabaseTabWidget(QWidget* parent)
     : QTabWidget(parent)
@@ -249,6 +250,50 @@ void DatabaseTabWidget::addDatabaseTab(DatabaseWidget* dbWidget, bool inBackgrou
     connect(dbWidget, SIGNAL(databaseLocked()), SLOT(emitDatabaseLockChanged()));
 }
 
+DatabaseWidget* DatabaseTabWidget::importFile()
+{
+    QScopedPointer wizard(new ImportWizard(this));
+    if (!wizard->exec()) {
+        return nullptr;
+    }
+
+    auto db = wizard->database();
+    if (!db) {
+        return nullptr;
+    }
+
+    auto rootGroup = db->rootGroup();
+    db->setRootGroup(new Group());
+
+    auto importInto = wizard->importInto();
+    if (importInto.first.isNull()) {
+        auto newdb = execNewDatabaseWizard();
+        if (newdb) {
+
+            newdb->setRootGroup(rootGroup);
+            auto dbWidget = new DatabaseWidget(newdb, this);
+            addDatabaseTab(dbWidget);
+            newdb->markAsModified();
+            return dbWidget;
+        }
+    } else {
+        for (int i = 0, c = count(); i < c; ++i) {
+            auto dbWidget = databaseWidgetFromIndex(i);
+            if (!dbWidget->isLocked() && dbWidget->database()->uuid() == importInto.first) {
+                auto group = dbWidget->database()->rootGroup()->findGroupByUuid(importInto.second);
+                if (group) {
+                    rootGroup->setParent(group);
+                    setCurrentIndex(i);
+                    return dbWidget;
+                }
+            }
+        }
+    }
+
+    delete rootGroup;
+    return nullptr;
+}
+
 void DatabaseTabWidget::importCsv()
 {
     auto filter = QString("%1 (*.csv);;%2 (*)").arg(tr("CSV file"), tr("All files"));
@@ -324,6 +369,23 @@ void DatabaseTabWidget::importOpVaultDatabase()
     auto* dbWidget = new DatabaseWidget(db, this);
     addDatabaseTab(dbWidget);
     dbWidget->switchToImportOpVault(fileName);
+}
+
+void DatabaseTabWidget::importOPUXDatabase()
+{
+    auto defaultDir = FileDialog::getLastDir("opux");
+    QString fileName = fileDialog()->getOpenFileName(this, tr("Open 1PUX File"), defaultDir, "1PUX (*.1pux)");
+
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    FileDialog::saveLastDir("opux", fileName);
+
+    auto db = QSharedPointer<Database>::create();
+    auto* dbWidget = new DatabaseWidget(db, this);
+    addDatabaseTab(dbWidget);
+    dbWidget->switchToImportOPUX(fileName);
 }
 
 /**
@@ -593,43 +655,18 @@ bool DatabaseTabWidget::hasLockableDatabases() const
  */
 QString DatabaseTabWidget::tabName(int index)
 {
-    if (index == -1 || index > count()) {
-        return "";
+    auto dbWidget = databaseWidgetFromIndex(index);
+    if (!dbWidget) {
+        return {};
     }
 
-    auto* dbWidget = databaseWidgetFromIndex(index);
-
-    auto db = dbWidget->database();
-    Q_ASSERT(db);
-    if (!db) {
-        return "";
-    }
-
-    QString tabName;
-
-    if (!db->filePath().isEmpty()) {
-        QFileInfo fileInfo(db->filePath());
-
-        if (db->metadata()->name().isEmpty()) {
-            tabName = fileInfo.fileName();
-        } else {
-            tabName = db->metadata()->name();
-        }
-
-        setTabToolTip(index, fileInfo.absoluteFilePath());
-    } else {
-        if (db->metadata()->name().isEmpty()) {
-            tabName = tr("New Database");
-        } else {
-            tabName = tr("%1 [New Database]", "Database tab name modifier").arg(db->metadata()->name());
-        }
-    }
+    auto tabName = dbWidget->displayName();
 
     if (dbWidget->isLocked()) {
         tabName = tr("%1 [Locked]", "Database tab name modifier").arg(tabName);
     }
 
-    if (db->isModified()) {
+    if (dbWidget->database()->isModified()) {
         tabName.append("*");
     }
 
@@ -652,6 +689,7 @@ void DatabaseTabWidget::updateTabName(int index)
     }
     index = indexOf(dbWidget);
     setTabText(index, tabName(index));
+    setTabToolTip(index, dbWidget->displayFilePath());
     emit tabNameChanged();
 }
 

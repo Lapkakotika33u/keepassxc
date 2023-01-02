@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 KeePassXC Team <team@keepassxc.org>
+ *  Copyright (C) 2022 KeePassXC Team <team@keepassxc.org>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,40 +15,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KEEPASSX_CLONEDIALOG_H
-#define KEEPASSX_CLONEDIALOG_H
+#ifndef OPUX_READER_H
+#define OPUX_READER_H
 
-#include <QDialog>
+#include <QSharedPointer>
 
-#include "core/Database.h"
-#include "gui/DatabaseWidget.h"
+class Database;
 
-namespace Ui
+/*!
+ * Imports a 1Password vault in 1PUX format: https://support.1password.com/1pux-format/
+ */
+class OPUXReader
 {
-    class CloneDialog;
-}
-
-class CloneDialog : public QDialog
-{
-    Q_OBJECT
-
 public:
-    explicit CloneDialog(DatabaseWidget* parent = nullptr, Database* db = nullptr, Entry* entry = nullptr);
-    ~CloneDialog() override;
+    explicit OPUXReader() = default;
+    ~OPUXReader() = default;
 
-signals:
-    void entryCloned(Entry* clone);
+    QSharedPointer<Database> convert(const QString& path);
+
+    bool hasError();
+    QString errorString();
 
 private:
-    QScopedPointer<Ui::CloneDialog> m_ui;
-
-private slots:
-    void cloneEntry();
-
-protected:
-    Database* m_db;
-    Entry* m_entry;
-    DatabaseWidget* m_parent;
+    QString m_error;
 };
 
-#endif // KEEPASSX_CLONEDIALOG_H
+#endif // OPUX_READER_H

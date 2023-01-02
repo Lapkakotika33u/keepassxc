@@ -230,8 +230,6 @@ private:
     bool m_updateTimeinfo;
 
     friend void Database::setRootGroup(Group* group);
-    friend Entry::~Entry();
-    friend void Entry::setGroup(Group* group, bool trackPrevious);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Group::CloneFlags)

@@ -482,9 +482,11 @@ MainWindow::MainWindow()
     connect(m_ui->actionDatabaseSecurity, SIGNAL(triggered()), m_ui->tabWidget, SLOT(showDatabaseSecurity()));
     connect(m_ui->actionReports, SIGNAL(triggered()), m_ui->tabWidget, SLOT(showDatabaseReports()));
     connect(m_ui->actionDatabaseSettings, SIGNAL(triggered()), m_ui->tabWidget, SLOT(showDatabaseSettings()));
+    connect(m_ui->actionImport, SIGNAL(triggered()), m_ui->tabWidget, SLOT(importFile()));
     connect(m_ui->actionImportCsv, SIGNAL(triggered()), m_ui->tabWidget, SLOT(importCsv()));
     connect(m_ui->actionImportKeePass1, SIGNAL(triggered()), m_ui->tabWidget, SLOT(importKeePass1Database()));
     connect(m_ui->actionImportOpVault, SIGNAL(triggered()), m_ui->tabWidget, SLOT(importOpVaultDatabase()));
+    connect(m_ui->actionImport1PUX, SIGNAL(triggered()), m_ui->tabWidget, SLOT(importOPUXDatabase()));
     connect(m_ui->actionExportCsv, SIGNAL(triggered()), m_ui->tabWidget, SLOT(exportToCsv()));
     connect(m_ui->actionExportHtml, SIGNAL(triggered()), m_ui->tabWidget, SLOT(exportToHtml()));
     connect(m_ui->actionExportXML, SIGNAL(triggered()), m_ui->tabWidget, SLOT(exportToXML()));
@@ -996,7 +998,6 @@ void MainWindow::setMenuActionState(DatabaseWidget::Mode mode)
             break;
         }
         case DatabaseWidget::Mode::EditMode:
-        case DatabaseWidget::Mode::ImportMode:
         case DatabaseWidget::Mode::LockedMode: {
             // Enable select actions when editing an entry
             bool editEntryActive = dbWidget->isEntryEditActive();
