@@ -99,6 +99,8 @@ bool ImportWizardPageSelect::validatePage()
 
 void ImportWizardPageSelect::itemSelected(QListWidgetItem* current, QListWidgetItem* previous)
 {
+    Q_UNUSED(previous)
+
     if (!current) {
         setCredentialState(false);
         return;

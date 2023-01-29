@@ -20,7 +20,7 @@
 #include "core/Database.h"
 #include "core/Entry.h"
 #include "core/Group.h"
-#include "totp/Totp.h"
+#include "totp/totp.h"
 
 #include <QFileInfo>
 #include <QJsonArray>
@@ -206,7 +206,7 @@ namespace
                     if (entry->hasTotp()) {
                         // Store multiple TOTP definitions as additional otp attributes
                         int i = 0;
-                        QString name("otp");
+                        name = "otp";
                         auto attributes = entry->attributes()->keys();
                         while (attributes.contains(name)) {
                             name = QString("otp_%1").arg(++i);

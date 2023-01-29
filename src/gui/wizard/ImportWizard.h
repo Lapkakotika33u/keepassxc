@@ -24,7 +24,6 @@
 class Database;
 class ImportWizardPageSelect;
 class ImportWizardPageReview;
-class ImportWizardPageFinish;
 
     /**
  * Setup wizard for importing a file into a database.
@@ -56,7 +55,6 @@ private:
     QSharedPointer<Database> m_db;
     QPointer<ImportWizardPageSelect> m_pageSelect;
     QPointer<ImportWizardPageReview> m_pageReview;
-    QPointer<ImportWizardPageFinish> m_pageFinish;
 };
 
 #endif // KEEPASSXC_IMPORTWIZARD_H

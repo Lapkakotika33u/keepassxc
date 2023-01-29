@@ -172,6 +172,7 @@ QSharedPointer<Database> ImportWizardPageReview::importBitwarden(const QString& 
     //     m_ui->messageWidget->showMessage(reader.errorString(), KMessageWidget::Error, -1);
     // }
     // return db;
+    Q_UNUSED(filename)
     return {};
 }
 

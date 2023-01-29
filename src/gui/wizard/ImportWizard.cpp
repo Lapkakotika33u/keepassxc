@@ -16,7 +16,6 @@
  */
 
 #include "ImportWizard.h"
-#include "ImportWizardPageFinish.h"
 #include "ImportWizardPageReview.h"
 #include "ImportWizardPageSelect.h"
 
@@ -30,7 +29,6 @@ ImportWizard::ImportWizard(QWidget* parent)
     : QWizard(parent)
     , m_pageSelect(new ImportWizardPageSelect)
     , m_pageReview(new ImportWizardPageReview)
-    , m_pageFinish(new ImportWizardPageFinish)
 {
     setWizardStyle(MacStyle);
     setOption(HaveHelpButton, false);
